@@ -1,109 +1,106 @@
+using _Project.Scripts.CharacterStats.Model;
 using _Project.Scripts.Infrastructure;
 
 namespace _Project.Scripts.CharacterStats.ViewModel
 {
     public class StatsViewModel
     {
-        private const int MAX_SKILL_STAT_VALUE = 18;
+        private const int MAX_STAT_VALUE = 18;
         
-        //Stats value 
-        public ReactiveProperty<int> StrView = new();
-        public ReactiveProperty<int> DexView = new();
-        public ReactiveProperty<int> IntView = new();
-        public ReactiveProperty<int> SkillsPointAvailableView = new();
-
-        public ReactiveProperty<bool> StrButtonEnabled = new();
-        public ReactiveProperty<bool> DexButtonEnabled = new();
-        public ReactiveProperty<bool> IntButtonEnabled = new();
+        public ReactProp<int> StrView = new();
+        public ReactProp<int> DexView = new();
+        public ReactProp<int> IntView = new();        
+        public ReactProp<int> SkillPoints = new();        
         
-        private StatsDefaultModel _model;
+        public ReactProp<bool> StrButtonAvailable = new();
+        public ReactProp<bool> DexButtonAvailable = new();
+        public ReactProp<bool> IntButtonAvailable = new();
+        
+        private StatsModel _statsModel;
 
-        public StatsViewModel(StatsDefaultModel model)
+        public StatsViewModel(StatsModel statsModel)
         {
-            _model = model;
-            _model.Str.OnValueChanged += OnStrChange;
-            _model.Dex.OnValueChanged += OnDexChange;
-            _model.Int.OnValueChanged += OnIntChange;
-            
-            SkillsPointAvailableView.OnValueChanged += OnCheckButtonStatus;
+            _statsModel = statsModel;
+            _statsModel.STR.OnValueChanged += StrValueChange;
+            _statsModel.DEX.OnValueChanged += DexValueChange;
+            _statsModel.INT.OnValueChanged += IntValueChange;
+
+            SkillPoints.OnValueChanged += OnSkilPointsChange;
             
             OnResetButtonClicked();
         }
 
-        private void OnStrChange(int value)
+        public void OnResetButtonClicked()
         {
-            StrView.Value = value;
+            StrView.Value = _statsModel.STR.Value;
+            DexView.Value = _statsModel.DEX.Value;
+            IntView.Value = _statsModel.INT.Value;
+            
+            SkillPoints.Value = _statsModel.AvailableSkillPoints;
         }
 
-        private void OnDexChange(int value)
+        public void OnApplyButtonClicked()
         {
-            DexView.Value = value;
+            _statsModel.STR.Value = StrView.Value;
+            _statsModel.DEX.Value = DexView.Value;
+            _statsModel.INT.Value = IntView.Value;
+            
+            _statsModel.AvailableSkillPoints = SkillPoints.Value;
         }
 
-        private void OnIntChange(int value)
-        {
-            IntView.Value = value;
-        }
-
-        //Reaction on view buttons pressed
         public void OnIncreaseStrButtonClicked()
         {
-            IncreasePropertyValue(StrView);
+            OnIncreaseStatButtonClicked(StrView);
         }
         
         public void OnIncreaseDexButtonClicked()
         {
-            IncreasePropertyValue(DexView);
+            OnIncreaseStatButtonClicked(DexView);
         }
         
         public void OnIncreaseIntButtonClicked()
         {
-            IncreasePropertyValue(IntView);
-        }
-
-        private void IncreasePropertyValue(ReactiveProperty<int> prop)
-        {
-            prop.Value += 1;
-            SkillsPointAvailableView.Value -= 1;
+            OnIncreaseStatButtonClicked(IntView);
         }
         
-        //Reset stats
-        public void OnResetButtonClicked()
+        private void StrValueChange(int value)
         {
-            //ViewModel values will be equal to model's values
-            StrView.Value = _model.Str.Value;
-            DexView.Value = _model.Dex.Value;
-            IntView.Value = _model.Int.Value;
-            SkillsPointAvailableView.Value = _model.SkillPointsAvailable;
+            StrView.Value = value;
         }
         
-        //Apply stats
-        public void OnApplyButtonClicked()
+        private void DexValueChange(int value)
         {
-            //Model values will be equal to viewModel values
-            _model.Str.Value = StrView.Value;
-            _model.Dex.Value = DexView.Value;
-            _model.Int.Value = IntView.Value;
-            _model.SkillPointsAvailable = SkillsPointAvailableView.Value;   
+            DexView.Value = value;
         }
 
-        private void CheckButtonStatus()
+        private void IntValueChange(int value)
         {
-            StrButtonEnabled.Value = StrView.Value < MAX_SKILL_STAT_VALUE;
-            DexButtonEnabled.Value = DexView.Value < MAX_SKILL_STAT_VALUE;
-            IntButtonEnabled.Value = IntView.Value < MAX_SKILL_STAT_VALUE;
+            IntView.Value = value;
+        }
+        
+        private void OnSkilPointsChange(int obj)
+        {
+            CheckButtonEnable();
+        }
 
-            if (SkillsPointAvailableView.Value <= 0)
+        private void OnIncreaseStatButtonClicked(ReactProp<int> stat)
+        {
+            stat.Value += 1;
+            SkillPoints.Value -= 1;
+        }
+        
+        private void CheckButtonEnable()
+        {
+            StrButtonAvailable.Value = StrView.Value < MAX_STAT_VALUE;
+            DexButtonAvailable.Value = DexView.Value < MAX_STAT_VALUE;
+            IntButtonAvailable.Value = IntView.Value < MAX_STAT_VALUE;
+
+            if (SkillPoints.Value <= 0)
             {
-                StrButtonEnabled.Value = false;
-                DexButtonEnabled.Value = false;
-                IntButtonEnabled.Value = false;
+                StrButtonAvailable.Value = false;
+                DexButtonAvailable.Value = false;
+                IntButtonAvailable.Value = false;
             }
-        }
-        
-        private void OnCheckButtonStatus(int obj)
-        {
-            CheckButtonStatus();
         }
     }
 }

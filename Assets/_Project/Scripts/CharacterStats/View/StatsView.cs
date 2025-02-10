@@ -7,113 +7,90 @@ namespace _Project.Scripts.CharacterStats.View
 {
     public class StatsView : MonoBehaviour
     {
-        [SerializeField] private Button _increaseStrStatsButton;
-        [SerializeField] private Button _increaseDexStatsButton;
-        [SerializeField] private Button _increaseIntStatsButton;
+        [SerializeField] private Button _increaseStrButton;
+        [SerializeField] private Button _increaseDexButton;
+        [SerializeField] private Button _increaseIntButton;
 
-        [SerializeField] private Button _resetStatsButton;
         [SerializeField] private Button _applyStatsButton;
+        [SerializeField] private Button _resetStatsButton;
+        
+        [SerializeField] private TextMeshProUGUI _strStatText;
+        [SerializeField] private TextMeshProUGUI _dexStatText;
+        [SerializeField] private TextMeshProUGUI _intStatText;
+        
+        [SerializeField] private TextMeshProUGUI _availableSkillPointsText;
+        
+        [SerializeField] private Sprite _avaliableButtonSprite;
+        [SerializeField] private Sprite _notAvailableButtonSprite;
+        
+        private StatsViewModel _statsViewModel;
 
-        [SerializeField] private TextMeshProUGUI _strValueText;
-        [SerializeField] private TextMeshProUGUI _dexValueText;
-        [SerializeField] private TextMeshProUGUI _intValueText;
-        [SerializeField] private TextMeshProUGUI _avaliableSkillPointsValueText;
-
-        [SerializeField] private Sprite _availableButtonSprite;
-        [SerializeField] private Sprite _disableButtonSprite;
-
-        private StatsViewModel _viewModel;
-
-        public void Init(StatsViewModel viewModel)
+        public void Init(StatsViewModel statsViewModel)
         {
-            _viewModel = viewModel;
+            _statsViewModel = statsViewModel;
 
-            _viewModel.StrView.OnValueChanged += RedrawStrValue;
-            _viewModel.DexView.OnValueChanged += RedrawDexValue;
-            _viewModel.IntView.OnValueChanged += RedrawIntValue;
-
-            _viewModel.SkillsPointAvailableView.OnValueChanged += RedrawAvailableSkillPoints;
+            _statsViewModel.StrView.OnValueChanged += ShowStrStatValue;
+            _statsViewModel.DexView.OnValueChanged += ShowDexStatValue;
+            _statsViewModel.IntView.OnValueChanged += ShowIntStatValue;
             
-            _viewModel.StrButtonEnabled.OnValueChanged += OnStrButtonEnabled;
-            _viewModel.DexButtonEnabled.OnValueChanged += OnDexButtonEnabled;
-            _viewModel.IntButtonEnabled.OnValueChanged += OnIntButtonEnabled;
+            _statsViewModel.StrButtonAvailable.OnValueChanged += OnIncreaseStrStatButtonAvailable;
+            _statsViewModel.DexButtonAvailable.OnValueChanged += OnIncreaseDexStatButtonAvailable;
+            _statsViewModel.IntButtonAvailable.OnValueChanged += OnIncreaseIntStatButtonAvailable;
             
-            _increaseStrStatsButton.onClick.AddListener(_viewModel.OnIncreaseStrButtonClicked);
-            _increaseDexStatsButton.onClick.AddListener(_viewModel.OnIncreaseDexButtonClicked);
-            _increaseIntStatsButton.onClick.AddListener(_viewModel.OnIncreaseIntButtonClicked);
-
-            _applyStatsButton.onClick.AddListener(_viewModel.OnApplyButtonClicked);
-            _resetStatsButton.onClick.AddListener(_viewModel.OnResetButtonClicked);
-
-            _strValueText.text = _viewModel.StrView.Value.ToString();
-            _dexValueText.text = _viewModel.DexView.Value.ToString();
-            _intValueText.text = _viewModel.IntView.Value.ToString();
+            _statsViewModel.SkillPoints.OnValueChanged += ShowAvailableSkillPoints;
+            
+            _increaseStrButton.onClick.AddListener(_statsViewModel.OnIncreaseStrButtonClicked);
+            _increaseDexButton.onClick.AddListener(_statsViewModel.OnIncreaseDexButtonClicked);
+            _increaseIntButton.onClick.AddListener(_statsViewModel.OnIncreaseIntButtonClicked);
+            
+            _applyStatsButton.onClick.AddListener(_statsViewModel.OnApplyButtonClicked);
+            _resetStatsButton.onClick.AddListener(_statsViewModel.OnResetButtonClicked);
+            
+            _strStatText.text = _statsViewModel.StrView.Value.ToString();
+            _dexStatText.text = _statsViewModel.DexView.Value.ToString();
+            _intStatText.text = _statsViewModel.IntView.Value.ToString();
+            _availableSkillPointsText.text = $"Skill points: {statsViewModel.SkillPoints.Value.ToString()}";
         }
 
-        private void OnDestroy()
+        private void ShowStrStatValue(int value)
         {
-            Dispose();
+            _strStatText.text = value.ToString();
         }
         
-        private void Dispose()
+        private void ShowDexStatValue(int value)
         {
-            _viewModel.StrView.OnValueChanged -= RedrawStrValue;
-            _viewModel.DexView.OnValueChanged -= RedrawDexValue;
-            _viewModel.IntView.OnValueChanged -= RedrawIntValue;
-
-            _viewModel.SkillsPointAvailableView.OnValueChanged -= RedrawAvailableSkillPoints;
-
-            _viewModel.StrButtonEnabled.OnValueChanged -= OnStrButtonEnabled;
-            _viewModel.DexButtonEnabled.OnValueChanged -= OnDexButtonEnabled;
-            _viewModel.IntButtonEnabled.OnValueChanged -= OnIntButtonEnabled;
-
-            _increaseStrStatsButton.onClick.RemoveListener(_viewModel.OnIncreaseStrButtonClicked);
-            _increaseDexStatsButton.onClick.RemoveListener(_viewModel.OnIncreaseDexButtonClicked);
-            _increaseIntStatsButton.onClick.RemoveListener(_viewModel.OnIncreaseIntButtonClicked);
-
-            _applyStatsButton.onClick.RemoveListener(_viewModel.OnApplyButtonClicked);
-            _resetStatsButton.onClick.RemoveListener(_viewModel.OnResetButtonClicked);
+            _dexStatText.text = value.ToString();
+        }
+        
+        private void ShowIntStatValue(int value)
+        {
+            _intStatText.text = value.ToString();
         }
 
-        private void ButtonEnabled(Button btn, bool isEnabled)
+        private void ShowAvailableSkillPoints(int value)
         {
-            btn.enabled = isEnabled;
-            btn.image.sprite = isEnabled ? _availableButtonSprite : _disableButtonSprite;
+            _availableSkillPointsText.text = $"Skill points: {value.ToString()}";
         }
 
-        private void OnStrButtonEnabled(bool obj)
+        private void OnIncreaseStrStatButtonAvailable(bool value)
         {
-            ButtonEnabled(_increaseStrStatsButton, obj);
+            OnButtonEnabled(_increaseStrButton, value);
         }
-
-        private void OnDexButtonEnabled(bool obj)
+        
+        private void OnIncreaseDexStatButtonAvailable(bool value)
         {
-            ButtonEnabled(_increaseDexStatsButton, obj);
+            OnButtonEnabled(_increaseDexButton, value);
         }
-
-        private void OnIntButtonEnabled(bool obj)
+        
+        private void OnIncreaseIntStatButtonAvailable(bool value)
         {
-            ButtonEnabled(_increaseIntStatsButton, obj);
+            OnButtonEnabled(_increaseIntButton, value);
         }
-
-        private void RedrawAvailableSkillPoints(int obj)
+        
+        private void OnButtonEnabled(Button button, bool value)
         {
-            _avaliableSkillPointsValueText.text = $"Available points: {obj.ToString()}";
-        }
-
-        private void RedrawIntValue(int obj)
-        {
-            _intValueText.text = obj.ToString();
-        }
-
-        private void RedrawDexValue(int obj)
-        {
-            _dexValueText.text = obj.ToString();
-        }
-
-        private void RedrawStrValue(int obj)
-        {
-            _strValueText.text = obj.ToString();
+            button.enabled = value;
+            button.image.sprite = value ? _avaliableButtonSprite : _notAvailableButtonSprite;
         }
     }
 }

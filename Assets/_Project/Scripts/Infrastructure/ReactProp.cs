@@ -2,7 +2,7 @@ using System;
 
 namespace _Project.Scripts.Infrastructure
 {
-    public class ReactiveProperty<T>
+    public class ReactProp<T>
     {
         public Action<T> OnValueChanged;
         

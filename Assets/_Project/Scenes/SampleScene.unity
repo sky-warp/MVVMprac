@@ -626,20 +626,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 486709257}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dcefaabe0354c818b1406a105e2bb02, type: 3}
+  m_Script: {fileID: 11500000, guid: 738d7533121445c09465f4b69afb466d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _increaseStrStatsButton: {fileID: 1427351416}
-  _increaseDexStatsButton: {fileID: 390047397}
-  _increaseIntStatsButton: {fileID: 954692867}
-  _resetStatsButton: {fileID: 1380304088}
+  _increaseStrButton: {fileID: 1427351416}
+  _increaseDexButton: {fileID: 390047397}
+  _increaseIntButton: {fileID: 954692867}
   _applyStatsButton: {fileID: 2145002931}
-  _strValueText: {fileID: 349355955}
-  _dexValueText: {fileID: 1546816344}
-  _intValueText: {fileID: 1991844697}
-  _avaliableSkillPointsValueText: {fileID: 2141688498}
-  _availableButtonSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  _disableButtonSprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  _resetStatsButton: {fileID: 1380304088}
+  _strStatText: {fileID: 349355955}
+  _dexStatText: {fileID: 1546816344}
+  _intStatText: {fileID: 1991844697}
+  _availableSkillPointsText: {fileID: 2141688498}
+  _avaliableButtonSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  _notAvailableButtonSprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &495402936
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,10 +954,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 619270312}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57efc4c7324043e692265db592bbebfe, type: 3}
+  m_Script: {fileID: 11500000, guid: 3cba8427da484a88b778dee0217b1e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _statsView: {fileID: 486709259}
+  _view: {fileID: 486709259}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1335,8 +1335,8 @@ RectTransform:
   m_GameObject: {fileID: 870044782}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 394609626}
   - {fileID: 2145002930}
